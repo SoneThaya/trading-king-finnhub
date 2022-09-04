@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
 import finnHub from "../apis/finnHub";
+import StockChart from "../components/StockChart";
+import StockData from "../components/StockData";
 
 const formatData = (data) => {
   return data.t.map((el, index) => {
     return {
       x: el * 1000,
-      y: data.c[index],
+      y: Math.floor(data.c[index]),
     };
   });
 };
@@ -58,7 +59,6 @@ const StockDetailPage = () => {
             },
           }),
         ]);
-        console.log(responses);
         setChartData({
           day: formatData(responses[0].data),
           week: formatData(responses[1].data),
@@ -71,7 +71,16 @@ const StockDetailPage = () => {
     fetchData();
   }, [symbol]);
 
-  return <div>StockDetailPage {symbol}</div>;
+  return (
+    <div>
+      {chartData && (
+        <div>
+          <StockChart chartData={chartData} symbol={symbol} />
+          <StockData symbol={symbol} />
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default StockDetailPage;
